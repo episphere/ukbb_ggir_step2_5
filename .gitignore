@@ -1,2 +1,6 @@
 *~
 logs
+*.Rproj.user
+*.Rproj
+.Rhistory
+.*
