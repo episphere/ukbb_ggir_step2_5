@@ -72,7 +72,6 @@ stage_results <- function(stage_root,data_root,f0,f1){
   #    print(current_files[!ok])
   #  }
 } 
-stage_results(stage_root,data_root)
 #stage_root <- "/lscratch/17581223/stage/"
 #stage_final <- "/data/UKBB_Matthews"
 #stage_results(stage_root,stage_final)
