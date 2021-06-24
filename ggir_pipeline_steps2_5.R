@@ -38,30 +38,41 @@ stage_input_files <-function(remote_root,local_root,f0=1,f1=0){
   }
 }
 
-stage_results <- function(local_root,remote_root,f0,f1){
-  print(local_root)
-  print(remote_root)
-  if (!file.exists(local_root)) stop(local_root," does not exist")
-  if (!file.exists(remote_root)) stop(remote_root," does not exist")
+stage_results <- function(stage_root,data_root,f0,f1){
+  stage_dir <- function(from_dir,to_dir){
+      from_files<-dir(from_dir,full.names = TRUE, include.dirs = FALSE)
+      to_files<-file.path(to_dir,dir(from_dir,include.dirs = FALSE))
+      file.copy(from_files,to_files,overwrite = T)
+  }
   
-  current_files <- list.files(file.path(local_root,"results"),recursive = T,include.dirs = T)
-  to_files <- ifelse(startsWith(basename(current_files),"Report"),current_files,sub("(.csv|.pdf)$",paste0("_",f0,"_",f1,"\\1"),current_files) )
-  print(to_files)
-    
-  local_res <- file.path(local_root,"results")
-  to_res <- file.path(remote_root,"results")
-  from_files <- file.path(local_res,current_files)
-  to_files <- file.path(to_res,to_files)
+  ## meta/ms5.outraw/xxx...
+  stage.m5.outraw <- list.dirs(file.path(stage_root,"meta","ms5.outraw"))[-1]
+  data.m5.outraw <- file.path(data_root,"meta","ms5.outraw",basename(stage.m5.outraw))
+  data.m5.outraw %>% walk(dir.create,showWarnings=FALSE,recursive=TRUE)
+  map2(stage.m5.outraw,data.m5.outraw,stage_dir)
 
-  print(from_files)
-  print(to_files)
-  ok <- file.copy(from_files,to_files)
-  if (!all(ok)){
-     message("trouble staging results:")
-     print(current_files[!ok])
-   }
+  
+#  if (!file.exists(local_root)) stop(local_root," does not exist")
+#  if (!file.exists(remote_root)) stop(remote_root," does not exist")
+  
+#  current_files <- list.files(file.path(local_root,"results"),recursive = T,include.dirs = T)
+  # to_files <- ifelse(startsWith(basename(current_files),"Report"),current_files,sub("(.csv|.pdf)$",paste0("_",f0,"_",f1,"\\1"),current_files) )
+  # print(to_files)
+  #   
+  # local_res <- file.path(local_root,"results")
+  # to_res <- file.path(remote_root,"results")
+  # from_files <- file.path(local_res,current_files)
+  # to_files <- file.path(to_res,to_files)
+  # 
+  # print(from_files)
+  # print(to_files)
+  # ok <- file.copy(from_files,to_files)
+  # if (!all(ok)){
+  #    message("trouble staging results:")
+  #    print(current_files[!ok])
+  #  }
 } 
-
+stage_results(stage_root,data_root)
 #stage_root <- "/lscratch/17581223/stage/"
 #stage_final <- "/data/UKBB_Matthews"
 #stage_results(stage_root,stage_final)
