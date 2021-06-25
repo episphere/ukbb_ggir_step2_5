@@ -4,3 +4,4 @@ logs
 *.Rproj
 .Rhistory
 .*
+.Rproj.user
